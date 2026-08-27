@@ -18,7 +18,19 @@ const currencyFlags = {
     USD: 'us',
     EUR: 'eu',
     GBP: 'gb',
-    BRL: 'br'
+    BRL: 'br',
+    ARS: 'ar',
+    AUD: 'au',
+    CAD: 'ca',
+    CHF: 'ch',
+    CNY: 'cn',
+    JPY: 'jp',
+    MXN: 'mx',
+    CLP: 'cl',
+    UYU: 'uy',
+    PYG: 'py',
+    PEN: 'pe',
+    COP: 'co'
 };
 
 let currentRate = null;
