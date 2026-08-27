@@ -11,89 +11,145 @@ const lastUpdated = document.querySelector('#last-updated');
 const errorMessage = document.querySelector('#error-message');
 const swapButton = document.querySelector('#swap-button');
 
+const fromFlag = document.querySelector('#from-flag');
+const toFlag = document.querySelector('#to-flag');
+
+const currencyFlags = {
+    USD: 'us',
+    EUR: 'eu',
+    GBP: 'gb',
+    BRL: 'br'
+};
+
 let currentRate = null;
 
+function updateFlags() {
+    fromFlag.className = `fi fi-${currencyFlags[fromCurrency.value]}`;
+    toFlag.className = `fi fi-${currencyFlags[toCurrency.value]}`;
+}
+
 function formatMoney(value, currency) {
-	return new Intl.NumberFormat('pt-BR', {
-		style: 'currency',
-		currency,
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-	}).format(value);
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(value);
 }
 
 function showError(message) {
-	errorMessage.textContent = message;
-	errorMessage.hidden = false;
-	resultOutput.textContent = '--';
+    errorMessage.textContent = message;
+    errorMessage.hidden = false;
+    resultOutput.textContent = '--';
 }
 
+
+// Esconde mensagem de erro
 function hideError() {
-	errorMessage.hidden = true;
+    errorMessage.hidden = true;
 }
 
 function updateResult() {
-	const amount = Number.parseFloat(amountInput.value);
-	if (!Number.isFinite(amount) || amount < 0 || currentRate === null) {
-		resultOutput.textContent = '--';
-		return;
-	}
+    const amount = Number.parseFloat(amountInput.value);
 
-	resultOutput.textContent = formatMoney(amount * currentRate, toCurrency.value);
+    if (!Number.isFinite(amount) || amount < 0 || currentRate === null) {
+        resultOutput.textContent = '--';
+        return;
+    }
+
+    resultOutput.textContent = formatMoney(
+        amount * currentRate,
+        toCurrency.value
+    );
 }
 
 async function fetchRate() {
-	const from = fromCurrency.value;
-	const to = toCurrency.value;
-	pairLabel.textContent = `${from} / ${to}`;
-	currentRate = null;
-	resultOutput.textContent = '...';
-	hideError();
+    const from = fromCurrency.value;
+    const to = toCurrency.value;
 
-	if (from === to) {
-		currentRate = 1;
-		lastUpdated.textContent = 'Paridade entre moedas';
-		updateResult();
-		return;
-	}
+    pairLabel.textContent = `${from} / ${to}`;
 
-	try {
-		const response = await fetch(`${API_URL}/${from}-${to}?token=${encodeURIComponent(API_TOKEN)}`);
-		if (!response.ok) {
-			throw new Error('A API respondeu com erro.');
-		}
+    currentRate = null;
+    resultOutput.textContent = '...';
 
-		const data = await response.json();
-		const quote = data[`${from}${to}`];
-		const rate = Number.parseFloat(quote?.bid);
-		if (!Number.isFinite(rate)) {
-			throw new Error('A cotação não foi encontrada.');
-		}
+    hideError();
 
-		currentRate = rate;
-		lastUpdated.textContent = `Atualizado às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-		updateResult();
-	} catch (error) {
-		showError('Não foi possível carregar a cotação. Tente novamente.');
-		lastUpdated.textContent = 'Falha ao conectar às cotações';
-		console.error(error);
-	}
+    // Se as duas moedas forem iguais
+    if (from === to) {
+        currentRate = 1;
+
+        lastUpdated.textContent = 'Paridade entre moedas';
+
+        updateResult();
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `${API_URL}/${from}-${to}?token=${encodeURIComponent(API_TOKEN)}`
+        );
+
+        if (!response.ok) {
+            throw new Error('A API respondeu com erro.');
+        }
+
+        const data = await response.json();
+
+        const quote = data[`${from}${to}`];
+        const rate = Number.parseFloat(quote?.bid);
+
+        if (!Number.isFinite(rate)) {
+            throw new Error('A cotação não foi encontrada.');
+        }
+
+        currentRate = rate;
+
+        lastUpdated.textContent =
+            `Atualizado às ${new Date().toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            })}`;
+
+        updateResult();
+
+    } catch (error) {
+        showError(
+            'Não foi possível carregar a cotação. Tente novamente.'
+        );
+
+        lastUpdated.textContent =
+            'Falha ao conectar às cotações';
+
+        console.error(error);
+    }
 }
 
 form.addEventListener('submit', (event) => {
-	event.preventDefault();
-	fetchRate();
+    event.preventDefault();
+    fetchRate();
 });
 
 amountInput.addEventListener('input', updateResult);
-fromCurrency.addEventListener('change', fetchRate);
-toCurrency.addEventListener('change', fetchRate);
 
-swapButton.addEventListener('click', () => {
-	const previousFrom = fromCurrency.value;
-	fromCurrency.value = toCurrency.value;
-	toCurrency.value = previousFrom;
-	fetchRate();
+fromCurrency.addEventListener('change', () => {
+    updateFlags();
+    fetchRate();
 });
 
+toCurrency.addEventListener('change', () => {
+    updateFlags();
+    fetchRate();
+});
+
+swapButton.addEventListener('click', () => {
+    const previousFrom = fromCurrency.value;
+
+    fromCurrency.value = toCurrency.value;
+    toCurrency.value = previousFrom;
+
+    updateFlags();
+    fetchRate();
+});
+
+updateFlags();
 fetchRate();

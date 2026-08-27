@@ -1,61 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Conversor de moedas com cotações atualizadas.">
-	<title>Câmbio em tempo real</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Conversor de moedas com cotações atualizadas.">
+    <title>Câmbio em tempo real</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css" />
 </head>
+
 <body>
-	<main class="page-shell">
-		<section class="intro" aria-labelledby="page-title">
-			<p class="eyebrow">Mercado global</p>
-			<h1 id="page-title">Seu dinheiro,<br><span>sem fronteiras.</span></h1>
-			<p class="intro-copy">Consulte a cotação atual e descubra quanto vale seu dinheiro em outra moeda.</p>
-			<div class="status-pill"><span class="status-dot" aria-hidden="true"></span><span id="last-updated">Conectando às cotações...</span></div>
-		</section>
+    <main class="page-shell">
+        <section class="intro" aria-labelledby="page-title">
+            <p class="eyebrow">Mercado global</p>
+            <h1 id="page-title">Seu dinheiro,<br><span>sem fronteiras.</span></h1>
+            <p class="intro-copy">Consulte a cotação atual e descubra quanto vale seu dinheiro em outra moeda.</p>
+            <div class="status-pill"><span class="status-dot" aria-hidden="true"></span><span
+                    id="last-updated">Conectando às cotações...</span></div>
+        </section>
 
-		<section class="converter-card" aria-label="Conversor de moedas">
-			<div class="card-topline"><span>CONVERSOR</span><span id="pair-label">USD / BRL</span></div>
-			<form id="converter-form">
-				<div class="field-group">
-					<label for="amount">Você envia</label>
-					<div class="input-row">
-						<input id="amount" name="amount" type="number" min="0" step="0.01" value="100" inputmode="decimal" autocomplete="off">
-						<select id="from-currency" aria-label="Moeda de origem">
-							<option value="USD">USD</option>
-							<option value="EUR">EUR</option>
-							<option value="GBP">GBP</option>
-							<option value="BRL">BRL</option>
-						</select>
-					</div>
-				</div>
+        <section class="converter-card" aria-label="Conversor de moedas">
+            <div class="card-topline"><span>CONVERSOR</span><span id="pair-label">USD / BRL</span></div>
+            <form id="converter-form">
+                <div class="field-group">
+                    <label for="amount">Você envia</label>
+                    <div class="input-row">
+                        <input id="amount" name="amount" type="number" min="0" step="0.01" value="100"
+                            inputmode="decimal" autocomplete="off">
+                        <div class="currency-picker">
+                            <span id="from-flag" class="fi fi-us"></span>
 
-				<button class="swap-button" id="swap-button" type="button" aria-label="Inverter moedas" title="Inverter moedas">↕</button>
+                            <select id="from-currency" aria-label="Moeda de origem">
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                                <option value="BRL">BRL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="field-group result-group">
-					<label for="result">Você recebe</label>
-					<div class="input-row">
-						<output id="result" for="amount from-currency to-currency">--</output>
-						<select id="to-currency" aria-label="Moeda de destino">
-							<option value="BRL">BRL</option>
-							<option value="USD">USD</option>
-							<option value="EUR">EUR</option>
-							<option value="GBP">GBP</option>
-						</select>
-					</div>
-				</div>
+                <button class="swap-button" id="swap-button" type="button" aria-label="Inverter moedas"
+                    title="Inverter moedas">↕</button>
 
-				<button class="convert-button" type="submit"><span>Atualizar cotação</span><span aria-hidden="true">→</span></button>
-				<p class="error-message" id="error-message" role="alert" hidden></p>
-			</form>
-			<p class="disclaimer">Taxa comercial de referência. O valor final pode variar conforme a instituição financeira.</p>
-		</section>
-	</main>
-	<script src="script.js"></script>
+                <div class="field-group result-group">
+                    <label for="result">Você recebe</label>
+                    <div class="input-row">
+                        <output id="result" for="amount from-currency to-currency">--</output>
+                        <div class="currency-picker">
+                            <span id="to-flag" class="fi fi-br"></span>
+
+                            <select id="to-currency" aria-label="Moeda de destino">
+                                <option value="BRL">BRL</option>
+                                <option value="USD">USD</option>
+                                <option value="EUR">EUR</option>
+                                <option value="GBP">GBP</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="convert-button" type="submit"><span>Atualizar cotação</span><span
+                        aria-hidden="true">→</span></button>
+                <p class="error-message" id="error-message" role="alert" hidden></p>
+            </form>
+            <p class="disclaimer">Taxa comercial de referência. O valor final pode variar conforme a instituição
+                financeira.</p>
+        </section>
+    </main>
+    <script src="script.js"></script>
 </body>
+
 </html>
