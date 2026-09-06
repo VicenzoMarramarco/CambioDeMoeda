@@ -1,4 +1,3 @@
-const API_TOKEN = 'sk_8YWIzv8JYv-abe4zI9KqZ7JGe9gtNJYBmQx0xFiYVM-SdDElWwalz0K42MqwG';
 const API_URL = 'https://economia.awesomeapi.com.br/json/last';
 
 const form = document.querySelector('#converter-form');
@@ -98,7 +97,7 @@ async function fetchRate() {
 
     try {
         const response = await fetch(
-            `${API_URL}/${from}-${to}?token=${encodeURIComponent(API_TOKEN)}`
+            `${API_URL}/${from}-${to}`
         );
 
         if (!response.ok) {
